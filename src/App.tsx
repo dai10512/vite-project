@@ -5,7 +5,7 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
-import About from './pages/About'
+import Memos from './pages/Memos'
 import Login from './pages/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import AppLayout from './components/AppLayout'
@@ -22,7 +22,7 @@ export default function App() {
         }
       >
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/memos" element={<Memos />} />
       </Route>
     </Routes>
   );

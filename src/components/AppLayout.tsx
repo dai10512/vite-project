@@ -3,7 +3,7 @@ import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/materi
 import { useAuth } from '../context/useAuth'
 
 export default function AppLayout() {
-  const { username, logout } = useAuth()
+  const { email, logout } = useAuth()
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'grey.100' }}>
@@ -15,17 +15,17 @@ export default function AppLayout() {
           <Button color="inherit" component={RouterLink} to="/">
             Home
           </Button>
-          <Button color="inherit" component={RouterLink} to="/about">
-            About
+          <Button color="inherit" component={RouterLink} to="/memos">
+            Memos
           </Button>
-          <Typography variant="body2">{username}さん</Typography>
+          <Typography variant="body2">{email}</Typography>
           <Button color="inherit" onClick={logout}>
             ログアウト
           </Button>
         </Toolbar>
       </AppBar>
       <Container sx={{ py: 4 }}>
-        {/* <Outlet /> */}
+        <Outlet />
       </Container>
     </Box>
   )
