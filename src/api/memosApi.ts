@@ -1,44 +1,33 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+import { apiClient } from './client'
+import type { paths } from './schema'
 
-export type Memo = {
-  id: string
-  title: string
-  user_id: string
-  created_at: string
-}
+export type Memo =
+  paths['/memos']['get']['responses']['200']['content']['application/json']['data'][number]
 
-type MemoListResponse = {
-  data: Memo[]
-  total: number
-  page: number
-  limit: number
-}
+type MemoListResponse = paths['/memos']['get']['responses']['200']['content']['application/json']
 
-async function request<T>(path: string, accessToken: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-      ...init.headers,
-    },
+export async function fetchMemos(accessToken: string): Promise<MemoListResponse> {
+  const { data, error } = await apiClient.GET('/memos', {
+    params: { query: {} },
+    headers: { Authorization: `Bearer ${accessToken}` },
   })
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => null)
-    throw new Error(body?.error ?? `リクエストに失敗しました (${res.status})`)
+  if (error) {
+    throw new Error('取得に失敗しました')
   }
-
-  return res.json()
+  return data
 }
 
-export function fetchMemos(accessToken: string): Promise<MemoListResponse> {
-  return request<MemoListResponse>('/memos', accessToken)
-}
-
-export function createMemo(accessToken: string, title: string): Promise<Memo> {
-  return request<Memo>('/memos', accessToken, {
-    method: 'POST',
-    body: JSON.stringify({ title }),
+export async function createMemo(
+  accessToken: string,
+  title: string,
+  content?: string,
+): Promise<Memo> {
+  const { data, error } = await apiClient.POST('/memos', {
+    body: { title, content },
+    headers: { Authorization: `Bearer ${accessToken}` },
   })
+  if (error || !data) {
+    throw new Error('作成に失敗しました')
+  }
+  return data
 }
